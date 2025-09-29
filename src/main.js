@@ -99,22 +99,66 @@ class QRCodeGenerator {
         }
         
         try {
-            // SVG要素を取得
-            const svgElement = this.canvas.querySelector('svg');
-            if (!svgElement) {
-                this.showError('SVGが見つかりません');
+            // QRコードのimg要素を取得
+            const qrImg = this.canvas.querySelector('img');
+            if (!qrImg) {
+                this.showError('QRコードが見つかりません');
                 return;
             }
             
-            // SVGファイルをダウンロード
-            const svgString = new XMLSerializer().serializeToString(svgElement);
-            const blob = new Blob([svgString], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = 'qrcode.svg';
-            link.href = url;
-            link.click();
-            URL.revokeObjectURL(url);
+            // 新しいQRコードインスタンスを作成してSVGを生成
+            const qrText = this.textInput.value.trim() || this.defaultText;
+            const options = {
+                text: qrText,
+                width: 300,
+                height: 300,
+                colorDark: '#000000',
+                colorLight: '#FFFFFF',
+                correctLevel: QRCode.CorrectLevel.M
+            };
+            
+            // 一時的なdiv要素を作成
+            const tempDiv = document.createElement('div');
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px';
+            tempDiv.style.top = '-9999px';
+            document.body.appendChild(tempDiv);
+            
+            // QRコードを生成
+            const qr = new QRCode(tempDiv, options);
+            
+            // SVG要素を取得
+            const svgElement = tempDiv.querySelector('svg');
+            if (!svgElement) {
+                // SVGが生成されない場合は、img要素をSVGに埋め込む
+                const imgDataUrl = qrImg.src;
+                const svgContent = `<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="300" height="300" fill="white"/>
+                    <image href="${imgDataUrl}" width="300" height="300"/>
+                </svg>`;
+                
+                // SVGファイルをダウンロード
+                const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'qrcode.svg';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            } else {
+                // SVG要素が存在する場合
+                const svgString = new XMLSerializer().serializeToString(svgElement);
+                const blob = new Blob([svgString], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'qrcode.svg';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+            
+            // 一時的な要素を削除
+            document.body.removeChild(tempDiv);
             
         } catch (error) {
             console.error('SVGダウンロードエラー:', error);
