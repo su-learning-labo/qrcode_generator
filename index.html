@@ -26,7 +26,7 @@
             
             <div class="qr-section">
                 <div class="qr-container">
-                    <canvas id="qr-canvas"></canvas>
+                    <div id="qr-canvas"></div>
                 </div>
                 
                 <div class="download-buttons">
@@ -43,11 +43,13 @@
     
     <!-- QRコード生成ライブラリ -->
     <script>
-        // 複数のCDNを試す
+        // 複数のCDNを試す（確実に動作するライブラリを使用）
         const cdnUrls = [
+            'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
+            'https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js',
+            'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js',
             'https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js',
-            'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js'
+            'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js'
         ];
         
         let currentIndex = 0;
@@ -62,7 +64,8 @@
             const script = document.createElement('script');
             script.src = cdnUrls[currentIndex];
             script.onload = function() {
-                console.log('QRCodeライブラリが読み込まれました:', cdnUrls[currentIndex]);
+                console.log('ライブラリが読み込まれました:', cdnUrls[currentIndex]);
+                // qrcodejsとqrcodeの両方をチェック
                 if (typeof QRCode !== 'undefined') {
                     console.log('QRCodeライブラリが正常に読み込まれました');
                     // main.jsを読み込み
