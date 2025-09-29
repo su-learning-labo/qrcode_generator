@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QRコードジェネレーター</title>
     <link rel="stylesheet" href="src/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
 </head>
 <body>
     <div class="container">
@@ -25,7 +26,7 @@
             
             <div class="qr-section">
                 <div class="qr-container">
-                    <div id="qr-canvas"></div>
+                    <canvas id="qr-canvas"></canvas>
                 </div>
                 
                 <div class="download-buttons">
@@ -41,7 +42,30 @@
     </div>
     
     <!-- QRコード生成ライブラリ -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="src/main.js"></script>
+    
+    <!-- エラーハンドリング -->
+    <script>
+        // グローバルエラーハンドリング
+        window.addEventListener('error', function(e) {
+            // ブラウザ拡張機能のエラーは無視
+            if (e.filename && e.filename.includes('content.js')) {
+                return;
+            }
+            // その他のエラーはコンソールに出力
+            console.error('アプリケーションエラー:', e.error);
+        });
+        
+        // Promise rejection エラーハンドリング
+        window.addEventListener('unhandledrejection', function(e) {
+            // ブラウザ拡張機能のエラーは無視
+            if (e.reason && e.reason.toString().includes('message port')) {
+                return;
+            }
+            // その他のエラーはコンソールに出力
+            console.error('未処理のPromise rejection:', e.reason);
+        });
+    </script>
 </body>
 </html>

@@ -28,25 +28,30 @@ class QRCodeGenerator {
         const qrText = text || this.defaultText;
         
         try {
-            // 既存のQRコードをクリア
-            this.canvas.innerHTML = '';
-            
             // QRコードの生成オプション
             const options = {
-                text: qrText,
                 width: 300,
                 height: 300,
-                colorDark: '#000000',
-                colorLight: '#FFFFFF',
-                correctLevel: QRCode.CorrectLevel.M
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                },
+                errorCorrectionLevel: 'M'
             };
             
-            // QRコードを生成
-            const qr = new QRCode(this.canvas, options);
-            
-            // 成功時の処理
-            this.currentQRCodeData = qrText;
-            this.hideError();
+            // QRコードをキャンバスに描画
+            QRCode.toCanvas(this.canvas, qrText, options, (error) => {
+                if (error) {
+                    console.error('QRコード生成エラー:', error);
+                    this.showError('QRコードの生成に失敗しました');
+                    return;
+                }
+                
+                // 成功時の処理
+                this.currentQRCodeData = qrText;
+                this.hideError();
+            });
             
         } catch (error) {
             console.error('QRコード生成エラー:', error);
@@ -61,30 +66,10 @@ class QRCodeGenerator {
         }
         
         try {
-            // QRコードのimg要素を取得
-            const qrImg = this.canvas.querySelector('img');
-            if (!qrImg) {
-                this.showError('QRコードが見つかりません');
-                return;
-            }
-            
-            // キャンバスを作成してPNG画像を生成
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 300;
-            canvas.height = 300;
-            
-            // 白い背景を描画
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, 300, 300);
-            
-            // QRコード画像を描画
-            ctx.drawImage(qrImg, 0, 0, 300, 300);
-            
-            // PNG画像をダウンロード
+            // キャンバスからPNG画像を生成
             const link = document.createElement('a');
             link.download = 'qrcode.png';
-            link.href = canvas.toDataURL('image/png');
+            link.href = this.canvas.toDataURL('image/png');
             link.click();
         } catch (error) {
             console.error('PNGダウンロードエラー:', error);
@@ -99,55 +84,27 @@ class QRCodeGenerator {
         }
         
         try {
-            // QRコードのimg要素を取得
-            const qrImg = this.canvas.querySelector('img');
-            if (!qrImg) {
-                this.showError('QRコードが見つかりません');
-                return;
-            }
-            
-            // 新しいQRコードインスタンスを作成してSVGを生成
+            // SVG形式でQRコードを生成
             const qrText = this.textInput.value.trim() || this.defaultText;
             const options = {
-                text: qrText,
                 width: 300,
                 height: 300,
-                colorDark: '#000000',
-                colorLight: '#FFFFFF',
-                correctLevel: QRCode.CorrectLevel.M
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                },
+                errorCorrectionLevel: 'M'
             };
             
-            // 一時的なdiv要素を作成
-            const tempDiv = document.createElement('div');
-            tempDiv.style.position = 'absolute';
-            tempDiv.style.left = '-9999px';
-            tempDiv.style.top = '-9999px';
-            document.body.appendChild(tempDiv);
-            
-            // QRコードを生成
-            const qr = new QRCode(tempDiv, options);
-            
-            // SVG要素を取得
-            const svgElement = tempDiv.querySelector('svg');
-            if (!svgElement) {
-                // SVGが生成されない場合は、img要素をSVGに埋め込む
-                const imgDataUrl = qrImg.src;
-                const svgContent = `<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="300" height="300" fill="white"/>
-                    <image href="${imgDataUrl}" width="300" height="300"/>
-                </svg>`;
+            QRCode.toString(qrText, options, (error, svgString) => {
+                if (error) {
+                    console.error('SVG生成エラー:', error);
+                    this.showError('SVGダウンロードに失敗しました');
+                    return;
+                }
                 
                 // SVGファイルをダウンロード
-                const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.download = 'qrcode.svg';
-                link.href = url;
-                link.click();
-                URL.revokeObjectURL(url);
-            } else {
-                // SVG要素が存在する場合
-                const svgString = new XMLSerializer().serializeToString(svgElement);
                 const blob = new Blob([svgString], { type: 'image/svg+xml' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -155,10 +112,7 @@ class QRCodeGenerator {
                 link.href = url;
                 link.click();
                 URL.revokeObjectURL(url);
-            }
-            
-            // 一時的な要素を削除
-            document.body.removeChild(tempDiv);
+            });
             
         } catch (error) {
             console.error('SVGダウンロードエラー:', error);

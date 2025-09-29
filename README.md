@@ -23,16 +23,17 @@
 - **HTML5**: セマンティックなマークアップ
 - **CSS3**: モダンなスタイリング（Flexbox、Grid、アニメーション）
 - **Vanilla JavaScript**: フレームワーク不要の純粋なJavaScript
-- **QRCode.js**: QRコード生成ライブラリ
+- **QRCode.js**: QRコード生成ライブラリ（PNG/SVG両対応）
 
 ### ファイル構成
 ```
-password_generator/
+qrcode_generator/
 ├── src/
 │   ├── main.js         # JavaScriptのメインファイル
 │   └── style.css       # CSSのスタイルファイル
 ├── index.html          # HTMLのメインファイル
 ├── package.json        # プロジェクト管理ファイル
+├── .gitignore          # Git除外ファイル設定
 └── README.md           # このファイル
 ```
 
@@ -46,8 +47,8 @@ password_generator/
 
 1. リポジトリをクローン
 ```bash
-git clone https://github.com/i-iide/password_generator.git
-cd password_generator
+git clone https://github.com/i-iide/qrcode_generator.git
+cd qrcode_generator
 ```
 
 2. ローカルサーバーを起動
@@ -82,6 +83,7 @@ npm start
 - **最大文字数**: 約2,953文字（エラー訂正レベルM）
 - **サイズ**: 300x300ピクセル
 - **マージン**: 2モジュール
+- **色設定**: 黒（#000000）と白（#FFFFFF）
 
 ### 対応入力形式
 - URL（http://、https://）
@@ -93,6 +95,7 @@ npm start
 ### ダウンロード形式
 - **PNG**: ラスター画像形式、一般的な用途に最適
 - **SVG**: ベクター画像形式、拡大しても画質劣化なし
+- **高品質**: 両形式とも300x300ピクセルの高解像度
 
 ## ブラウザ対応
 
@@ -111,6 +114,13 @@ i-iide
 
 ## 更新履歴
 
+### v1.1.0 (2024-12-19)
+- QRCode.jsライブラリからqrcodeパッケージに変更
+- PNG/SVG両形式の高品質ダウンロード機能を実装
+- エラーハンドリングの改善
+- ファビコンの追加
+- コンソールエラーの解決
+
 ### v1.0.0 (2024-12-19)
 - 初回リリース
 - 基本的なQRコード生成機能
@@ -119,15 +129,32 @@ i-iide
 
 ## 今後の予定
 
+- [x] PNG/SVG両形式の高品質ダウンロード機能
 - [ ] QRコードの色カスタマイズ機能
 - [ ] 中央ロゴ挿入機能
 - [ ] バッチ処理機能
 - [ ] 履歴保存機能
 - [ ] 多言語対応
+- [ ] QRコードサイズのカスタマイズ機能
 
 ## サポート
 
 問題や要望がございましたら、GitHubのIssuesページでお知らせください。
+
+---
+
+## 技術的な詳細
+
+### QRCodeライブラリ
+- **パッケージ**: qrcode@1.5.3
+- **CDN**: unpkg.com
+- **API**: QRCode.toCanvas(), QRCode.toString()
+- **対応形式**: PNG, SVG
+
+### セキュリティ
+- **CORS対応**: 適切なエラーハンドリング
+- **プライバシー**: 完全にクライアントサイドで動作
+- **データ送信**: サーバーへのデータ送信なし
 
 ---
 
