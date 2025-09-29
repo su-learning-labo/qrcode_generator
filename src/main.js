@@ -28,31 +28,23 @@ class QRCodeGenerator {
         const qrText = text || this.defaultText;
         
         try {
+            // 既存のQRコードをクリア
+            this.canvas.innerHTML = '';
+            
             // kjuaライブラリのオプション
             const options = {
+                text: qrText,
                 render: 'canvas',
-                crisp: true,
-                minVersion: 1,
-                ecLevel: 'M',
                 size: 300,
-                ratio: null,
                 fill: '#000000',
                 back: '#FFFFFF',
-                text: qrText,
-                rounded: 0,
-                quiet: 2,
-                mode: 0,
-                mSize: 0.1,
-                mPosX: 0.5,
-                mPosY: 0.5,
-                label: '',
-                fontname: 'sans',
-                fontcolor: '#000000',
-                image: null
+                ecLevel: 'M',
+                quiet: 2
             };
             
-            // QRコードを生成
-            kjua(this.canvas, options);
+            // QRコードを生成（kjuaは要素を返す）
+            const canvasElement = kjua(options);
+            this.canvas.appendChild(canvasElement);
             
             // 成功時の処理
             this.currentQRCodeData = qrText;
@@ -71,10 +63,17 @@ class QRCodeGenerator {
         }
         
         try {
+            // キャンバス要素を取得
+            const canvasElement = this.canvas.querySelector('canvas');
+            if (!canvasElement) {
+                this.showError('QRコードが見つかりません');
+                return;
+            }
+            
             // キャンバスからPNG画像を生成
             const link = document.createElement('a');
             link.download = 'qrcode.png';
-            link.href = this.canvas.toDataURL('image/png');
+            link.href = canvasElement.toDataURL('image/png');
             link.click();
         } catch (error) {
             console.error('PNGダウンロードエラー:', error);
@@ -92,44 +91,17 @@ class QRCodeGenerator {
             // kjuaでSVGを生成
             const qrText = this.textInput.value.trim() || this.defaultText;
             const options = {
+                text: qrText,
                 render: 'svg',
-                crisp: true,
-                minVersion: 1,
-                ecLevel: 'M',
                 size: 300,
-                ratio: null,
                 fill: '#000000',
                 back: '#FFFFFF',
-                text: qrText,
-                rounded: 0,
-                quiet: 2,
-                mode: 0,
-                mSize: 0.1,
-                mPosX: 0.5,
-                mPosY: 0.5,
-                label: '',
-                fontname: 'sans',
-                fontcolor: '#000000',
-                image: null
+                ecLevel: 'M',
+                quiet: 2
             };
             
-            // 一時的なdiv要素を作成
-            const tempDiv = document.createElement('div');
-            tempDiv.style.position = 'absolute';
-            tempDiv.style.left = '-9999px';
-            tempDiv.style.top = '-9999px';
-            document.body.appendChild(tempDiv);
-            
-            // SVGを生成
-            kjua(tempDiv, options);
-            
-            // SVG要素を取得
-            const svgElement = tempDiv.querySelector('svg');
-            if (!svgElement) {
-                this.showError('SVG生成に失敗しました');
-                document.body.removeChild(tempDiv);
-                return;
-            }
+            // SVG要素を生成（kjuaは要素を返す）
+            const svgElement = kjua(options);
             
             // SVGファイルをダウンロード
             const svgString = new XMLSerializer().serializeToString(svgElement);
@@ -140,9 +112,6 @@ class QRCodeGenerator {
             link.href = url;
             link.click();
             URL.revokeObjectURL(url);
-            
-            // 一時的な要素を削除
-            document.body.removeChild(tempDiv);
             
         } catch (error) {
             console.error('SVGダウンロードエラー:', error);
