@@ -25,7 +25,7 @@
             
             <div class="qr-section">
                 <div class="qr-container">
-                    <canvas id="qr-canvas"></canvas>
+                    <div id="qr-canvas"></div>
                 </div>
                 
                 <div class="download-buttons">
@@ -41,51 +41,7 @@
     </div>
     
     <!-- QRコード生成ライブラリ -->
-    <script>
-        // 複数のCDNを試す
-        const cdnUrls = [
-            'https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js',
-            'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js'
-        ];
-        
-        let currentCdnIndex = 0;
-        
-        function loadQRCodeLibrary() {
-            if (currentCdnIndex >= cdnUrls.length) {
-                console.error('すべてのCDNからの読み込みに失敗しました');
-                alert('QRコードライブラリの読み込みに失敗しました。インターネット接続を確認してください。');
-                return;
-            }
-            
-            const script = document.createElement('script');
-            script.src = cdnUrls[currentCdnIndex];
-            script.onload = function() {
-                console.log('QRCodeライブラリが読み込まれました:', cdnUrls[currentCdnIndex]);
-                loadMainScript();
-            };
-            script.onerror = function() {
-                console.warn('CDN読み込み失敗:', cdnUrls[currentCdnIndex]);
-                currentCdnIndex++;
-                loadQRCodeLibrary();
-            };
-            document.head.appendChild(script);
-        }
-        
-        function loadMainScript() {
-            const script = document.createElement('script');
-            script.src = 'src/main.js';
-            script.onerror = function() {
-                console.error('main.jsの読み込みに失敗しました');
-            };
-            document.body.appendChild(script);
-        }
-        
-        // ページ読み込み完了後にQRCodeライブラリの読み込みを開始
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOMが読み込まれました');
-            loadQRCodeLibrary();
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="src/main.js"></script>
 </body>
 </html>

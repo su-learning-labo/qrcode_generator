@@ -104,6 +104,15 @@ main {
     width: 100%;
     height: auto;
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#qr-canvas img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
 }
 
 /* ダウンロードボタン */
