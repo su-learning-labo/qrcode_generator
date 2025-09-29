@@ -12,12 +12,14 @@ class QRCodeGenerator {
         this.inputType = document.querySelector('.input-type');
         
         // ロゴ関連の要素
+        this.logoSection = document.getElementById('logo-section');
         this.logoUpload = document.getElementById('logo-upload');
         this.logoUploadArea = document.getElementById('logo-upload-area');
         this.uploadPlaceholder = document.getElementById('upload-placeholder');
         this.logoPreview = document.getElementById('logo-preview');
         this.logoImage = document.getElementById('logo-image');
         this.removeLogoBtn = document.getElementById('remove-logo');
+        this.toggleLogoBtn = document.getElementById('toggle-logo');
         
         this.defaultText = 'https://example.com';
         this.currentQRCodeData = null;
@@ -37,6 +39,7 @@ class QRCodeGenerator {
         this.fullscreenBtn.addEventListener('click', () => this.showFullscreen());
         
         // ロゴアップロード関連のイベントリスナー
+        this.toggleLogoBtn.addEventListener('click', () => this.toggleLogoSection());
         this.logoUpload.addEventListener('change', (e) => this.handleLogoUpload(e));
         this.logoUploadArea.addEventListener('click', () => this.logoUpload.click());
         this.logoUploadArea.addEventListener('dragover', (e) => this.handleDragOver(e));
@@ -564,6 +567,27 @@ class QRCodeGenerator {
         this.logoPreview.style.display = 'none';
         this.generateQRCode(); // QRコードを再生成
         this.showSuccess('ロゴが削除されました');
+    }
+    
+    toggleLogoSection() {
+        const isVisible = this.logoSection.style.display !== 'none';
+        
+        if (isVisible) {
+            // 非表示にする
+            this.logoSection.style.display = 'none';
+            this.toggleLogoBtn.classList.remove('active');
+            this.toggleLogoBtn.querySelector('.btn-text').textContent = 'ロゴ追加';
+            
+            // ロゴがある場合は削除
+            if (this.currentLogoData) {
+                this.removeLogo();
+            }
+        } else {
+            // 表示する
+            this.logoSection.style.display = 'block';
+            this.toggleLogoBtn.classList.add('active');
+            this.toggleLogoBtn.querySelector('.btn-text').textContent = 'ロゴ非表示';
+        }
     }
     
     addLogoToQRCode(qrElement) {
