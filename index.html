@@ -42,8 +42,50 @@
     </div>
     
     <!-- QRコード生成ライブラリ -->
-    <script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <script src="src/main.js"></script>
+    <script>
+        // 複数のCDNを試す
+        const cdnUrls = [
+            'https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js',
+            'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js'
+        ];
+        
+        let currentIndex = 0;
+        
+        function loadQRCodeLibrary() {
+            if (currentIndex >= cdnUrls.length) {
+                console.error('すべてのCDNからの読み込みに失敗しました');
+                alert('QRコードライブラリの読み込みに失敗しました。インターネット接続を確認してください。');
+                return;
+            }
+            
+            const script = document.createElement('script');
+            script.src = cdnUrls[currentIndex];
+            script.onload = function() {
+                console.log('QRCodeライブラリが読み込まれました:', cdnUrls[currentIndex]);
+                if (typeof QRCode !== 'undefined') {
+                    console.log('QRCodeライブラリが正常に読み込まれました');
+                    // main.jsを読み込み
+                    const mainScript = document.createElement('script');
+                    mainScript.src = 'src/main.js';
+                    document.body.appendChild(mainScript);
+                } else {
+                    console.warn('QRCodeライブラリが正しく読み込まれませんでした');
+                    currentIndex++;
+                    loadQRCodeLibrary();
+                }
+            };
+            script.onerror = function() {
+                console.warn('CDN読み込み失敗:', cdnUrls[currentIndex]);
+                currentIndex++;
+                loadQRCodeLibrary();
+            };
+            document.head.appendChild(script);
+        }
+        
+        // ページ読み込み完了後にライブラリを読み込み
+        document.addEventListener('DOMContentLoaded', loadQRCodeLibrary);
+    </script>
     
     <!-- エラーハンドリング -->
     <script>
