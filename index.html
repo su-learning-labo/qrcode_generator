@@ -37,24 +37,23 @@
         </main>
         
         <footer>
-            <p>&copy; 2024 QRコードジェネレーター</p>
+            <p>&copy; 2025 QRコードジェネレーター</p>
         </footer>
     </div>
     
     <!-- QRコード生成ライブラリ -->
     <script>
-        // kjuaライブラリを使用（正しいCDN URL）
+        // kjuaライブラリを使用（確実なCDN URL）
         const cdnUrls = [
             'https://cdn.jsdelivr.net/npm/kjua@0.10.0/dist/kjua.min.js',
-            'https://cdn.jsdelivr.net/npm/kjua-svg@1.13.1/kjua.min.js',
-            'https://unpkg.com/kjua@0.10.0/dist/kjua.min.js'
+            'https://unpkg.com/kjua@0.10.0/dist/kjua.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/kjua/0.10.0/kjua.min.js'
         ];
         
         let currentIndex = 0;
         
         function loadQRCodeLibrary() {
             if (currentIndex >= cdnUrls.length) {
-                console.error('すべてのCDNからの読み込みに失敗しました');
                 alert('QRコードライブラリの読み込みに失敗しました。インターネット接続を確認してください。');
                 return;
             }
@@ -62,22 +61,18 @@
             const script = document.createElement('script');
             script.src = cdnUrls[currentIndex];
             script.onload = function() {
-                console.log('ライブラリが読み込まれました:', cdnUrls[currentIndex]);
                 // kjuaライブラリをチェック
-                if (typeof kjua !== 'undefined') {
-                    console.log('kjuaライブラリが正常に読み込まれました');
+                if (typeof kjua !== 'undefined' || typeof window.kjua !== 'undefined') {
                     // main.jsを読み込み
                     const mainScript = document.createElement('script');
                     mainScript.src = 'src/main.js';
                     document.body.appendChild(mainScript);
                 } else {
-                    console.warn('kjuaライブラリが正しく読み込まれませんでした');
                     currentIndex++;
                     loadQRCodeLibrary();
                 }
             };
             script.onerror = function() {
-                console.warn('CDN読み込み失敗:', cdnUrls[currentIndex]);
                 currentIndex++;
                 loadQRCodeLibrary();
             };

@@ -28,27 +28,38 @@ class QRCodeGenerator {
         const qrText = text || this.defaultText;
         
         try {
+            // kjua関数が存在するかチェック
+            if (typeof kjua === 'undefined') {
+                this.showError('QRコードライブラリが読み込まれていません');
+                return;
+            }
+            
             // 既存のQRコードをクリア
             this.canvas.innerHTML = '';
             
             // kjuaライブラリのオプション
             const options = {
                 text: qrText,
-                render: 'canvas',
+                render: 'image',
                 size: 300,
                 fill: '#000000',
                 back: '#FFFFFF',
                 ecLevel: 'M',
-                quiet: 2
+                quiet: 0,
+                crisp: true,
+                minVersion: 1
             };
             
-            // QRコードを生成（kjuaは要素を返す）
-            const canvasElement = kjua(options);
-            this.canvas.appendChild(canvasElement);
+            // QRコードを生成
+            const element = kjua(options);
             
-            // 成功時の処理
-            this.currentQRCodeData = qrText;
-            this.hideError();
+            if (element) {
+                this.canvas.appendChild(element);
+                this.currentQRCodeData = qrText;
+                this.hideError();
+            } else {
+                throw new Error('kjuaが要素を返しませんでした');
+            }
             
         } catch (error) {
             console.error('QRコード生成エラー:', error);
@@ -63,18 +74,39 @@ class QRCodeGenerator {
         }
         
         try {
-            // キャンバス要素を取得
+            // img要素またはcanvas要素を取得
+            const imgElement = this.canvas.querySelector('img');
             const canvasElement = this.canvas.querySelector('canvas');
-            if (!canvasElement) {
+            
+            if (imgElement) {
+                // img要素の場合：新しいcanvasを作成してPNGに変換
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 300;
+                canvas.height = 300;
+                
+                // 白い背景を描画
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, 300, 300);
+                
+                // img要素を描画
+                ctx.drawImage(imgElement, 0, 0, 300, 300);
+                
+                // PNG画像をダウンロード
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } else if (canvasElement) {
+                // canvas要素の場合：直接PNGに変換
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = canvasElement.toDataURL('image/png');
+                link.click();
+            } else {
                 this.showError('QRコードが見つかりません');
                 return;
             }
-            
-            // キャンバスからPNG画像を生成
-            const link = document.createElement('a');
-            link.download = 'qrcode.png';
-            link.href = canvasElement.toDataURL('image/png');
-            link.click();
         } catch (error) {
             console.error('PNGダウンロードエラー:', error);
             this.showError('PNGダウンロードに失敗しました');
@@ -97,11 +129,17 @@ class QRCodeGenerator {
                 fill: '#000000',
                 back: '#FFFFFF',
                 ecLevel: 'M',
-                quiet: 2
+                quiet: 0,
+                crisp: true,
+                minVersion: 1
             };
             
-            // SVG要素を生成（kjuaは要素を返す）
+            // SVG要素を生成
             const svgElement = kjua(options);
+            if (!svgElement) {
+                this.showError('SVG生成に失敗しました');
+                return;
+            }
             
             // SVGファイルをダウンロード
             const svgString = new XMLSerializer().serializeToString(svgElement);
@@ -151,10 +189,12 @@ class QRCodeGenerator {
     }
 }
 
-// ページ読み込み完了後にアプリを初期化
-document.addEventListener('DOMContentLoaded', () => {
+// DOMContentLoadedイベントまたは即座に初期化
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new QRCodeGenerator());
+} else {
     new QRCodeGenerator();
-});
+}
 
 // ユーティリティ関数
 const utils = {
@@ -188,8 +228,7 @@ const utils = {
     }
 };
 
-// デバッグ用（開発時のみ）
+// 開発時のデバッグ情報
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     console.log('QRコードジェネレーターが初期化されました');
-    console.log('利用可能なユーティリティ関数:', Object.keys(utils));
 }

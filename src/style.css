@@ -110,7 +110,8 @@ main {
 }
 
 #qr-canvas canvas,
-#qr-canvas svg {
+#qr-canvas svg,
+#qr-canvas img {
     max-width: 100%;
     height: auto;
     border-radius: 10px;
