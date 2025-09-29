@@ -15,23 +15,74 @@
         </header>
         
         <main>
-            <div class="input-section">
-                <label for="text-input">テキストまたはURLを入力してください</label>
-                <textarea 
-                    id="text-input" 
-                    placeholder="ここにURLやテキストを入力"
+        <div class="input-section">
+            <label for="text-input">
+                <span class="label-text">テキストまたはURLを入力してください</span>
+                <span class="label-icon">📝</span>
+            </label>
+            <div class="input-wrapper">
+                <textarea
+                    id="text-input"
+                    placeholder="ここにURLやテキストを入力してください..."
                     rows="3"
                 ></textarea>
+                <div class="input-footer">
+                    <span class="char-count">0 / 2953 文字</span>
+                    <span class="input-type">テキスト</span>
+                </div>
             </div>
+        </div>
+
+        <div class="logo-section">
+            <label for="logo-upload" class="logo-label">
+                <span class="label-text">中央ロゴ（オプション）</span>
+                <span class="label-icon">🖼️</span>
+            </label>
+            <div class="logo-upload-area" id="logo-upload-area">
+                <input type="file" id="logo-upload" accept="image/*" style="display: none;">
+                <div class="upload-placeholder" id="upload-placeholder">
+                    <div class="upload-icon">📁</div>
+                    <p>ロゴ画像を選択してください</p>
+                    <small>PNG, JPG, SVG対応（推奨サイズ: 60x60px）</small>
+                </div>
+                <div class="logo-preview" id="logo-preview" style="display: none;">
+                    <img id="logo-image" alt="ロゴプレビュー">
+                    <button type="button" id="remove-logo" class="remove-logo-btn">×</button>
+                </div>
+            </div>
+        </div>
             
             <div class="qr-section">
                 <div class="qr-container">
-                    <div id="qr-canvas"></div>
+                    <div class="qr-header">
+                        <h3>QRコード</h3>
+                        <div class="qr-actions">
+                            <button class="action-btn" title="コピー" id="copy-qr">📋</button>
+                            <button class="action-btn" title="全画面表示" id="fullscreen-qr">🔍</button>
+                        </div>
+                    </div>
+                    <div id="qr-canvas" class="qr-display">
+                        <div class="qr-placeholder">
+                            <div class="placeholder-icon">📱</div>
+                            <p>テキストを入力するとQRコードが表示されます</p>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="download-buttons">
-                    <button id="download-png" class="download-btn png-btn">PNGでダウンロード</button>
-                    <button id="download-svg" class="download-btn svg-btn">SVGでダウンロード</button>
+                <div class="download-section">
+                    <h4>ダウンロード</h4>
+                    <div class="download-buttons">
+                        <button id="download-png" class="download-btn png-btn">
+                            <span class="btn-icon">🖼️</span>
+                            <span class="btn-text">PNG</span>
+                            <span class="btn-desc">高品質画像</span>
+                        </button>
+                        <button id="download-svg" class="download-btn svg-btn">
+                            <span class="btn-icon">🎨</span>
+                            <span class="btn-text">SVG</span>
+                            <span class="btn-desc">ベクター形式</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </main>
