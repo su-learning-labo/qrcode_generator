@@ -12,6 +12,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Get Runner IP
+        id: get_ip
+        run: echo "RUNNER_IP=$(curl -s ifconfig.me)" >> $GITHUB_OUTPUT
+      
+      - name: Print Runner IP
+        run: echo "The runner IP is ${{ steps.get_ip.outputs.RUNNER_IP }}"
+    
       # 【改善点①】まずリポジトリのコードをチェックアウトする
       - name: Checkout repository
         uses: actions/checkout@v4
