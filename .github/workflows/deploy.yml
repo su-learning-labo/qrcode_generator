@@ -1,0 +1,32 @@
+# ワークフローの名前
+name: Deploy to Xserver
+
+# ワークフローが実行されるタイミング
+on:
+  # mainブランチにプッシュされた時だけ実行
+  push:
+    branches:
+      - main
+
+# 実行されるジョブを定義
+jobs:
+  deploy:
+    # ubuntuの最新版仮想環境で実行
+    runs-on: ubuntu-latest
+
+    # ジョブのステップ
+    steps:
+      # SSH接続とコマンド実行を行うための、実績のあるアクションを利用
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          # GitHub Secretsに登録した情報をここで使う
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+
+          # サーバー上で実行するコマンド
+          script: |
+            cd /home/raytree/i-iide.com/public_html/portfolio/qrcode-generator
+            git pull origin main
