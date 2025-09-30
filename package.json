@@ -17,16 +17,16 @@
     "html",
     "css"
   ],
-  "author": "i-iide",
+  "author": "Su",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/i-iide/password_generator.git"
+    "url": "https://github.com/i-iide/qrcode_generator.git"
   },
   "bugs": {
-    "url": "https://github.com/i-iide/password_generator/issues"
+    "url": "https://github.com/i-iide/qrcode_generator/issues"
   },
-  "homepage": "https://github.com/i-iide/password_generator#readme",
+  "homepage": "https://github.com/i-iide/qrcode_generator#readme",
   "devDependencies": {},
   "dependencies": {},
   "engines": {

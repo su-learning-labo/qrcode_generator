@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>QRコードジェネレーター</title>
-    <link rel="stylesheet" href="src/style.css?v=2.0">
+    <link rel="stylesheet" href="src/style.css?v=2.3">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
 </head>
 <body>
@@ -125,7 +125,7 @@
                 if (typeof kjua !== 'undefined' || typeof window.kjua !== 'undefined') {
                     // main.jsを読み込み
                     const mainScript = document.createElement('script');
-                    mainScript.src = 'src/main.js?v=2.0';
+                    mainScript.src = 'src/main.js?v=2.3';
                     document.body.appendChild(mainScript);
                 } else {
                     currentIndex++;
@@ -141,7 +141,7 @@
         
         // ページ読み込み完了後にライブラリを読み込み
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('ページ読み込み完了 - バージョン 2.0');
+            console.log('ページ読み込み完了 - バージョン 2.3');
             console.log('CSSファイル:', document.querySelector('link[href*="style.css"]').href);
             loadQRCodeLibrary();
         });
