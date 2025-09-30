@@ -3,7 +3,6 @@ name: Deploy to Xserver
 
 # ワークフローが実行されるタイミング
 on:
-  # mainブランチにプッシュされた時だけ実行
   push:
     branches:
       - main
@@ -11,22 +10,24 @@ on:
 # 実行されるジョブを定義
 jobs:
   deploy:
-    # ubuntuの最新版仮想環境で実行
     runs-on: ubuntu-latest
-
-    # ジョブのステップ
     steps:
-      # SSH接続とコマンド実行を行うための、実績のあるアクションを利用
+      # 【改善点①】まずリポジトリのコードをチェックアウトする
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 【改善点②】アクションのバージョンを固定する
       - name: Deploy to Server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.0 # ← @masterからバージョン指定に変更
         with:
-          # GitHub Secretsに登録した情報をここで使う
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
 
-          # サーバー上で実行するコマンド
+          # 【改善点③】より堅牢なスクリプト
           script: |
-            cd /home/raytree/i-iide.com/public_html/apps/qrcode-generator
+            set -e # エラーが発生したら、すぐにスクリプトを停止する
+            cd /home/raytree/i-iide.com/public_html/apps/qrcode_generator
             git pull origin main
+            echo "✅ Deploy successful!" # 成功メッセージを表示
