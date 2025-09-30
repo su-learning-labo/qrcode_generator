@@ -28,5 +28,5 @@ jobs:
 
           # サーバー上で実行するコマンド
           script: |
-            cd /home/raytree/i-iide.com/public_html/portfolio/qrcode-generator
+            cd /home/raytree/i-iide.com/public_html/apps/qrcode-generator
             git pull origin main
